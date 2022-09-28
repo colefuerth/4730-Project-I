@@ -2,6 +2,14 @@
 
 4730 Machine Learning Fall 2022 Project I Repository
 
+## Installing Requirements
+
+To install the requirements, run the following command:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Project Requirements
 
 - A group of 2 to 3 students (3 or 4 for 4730)
