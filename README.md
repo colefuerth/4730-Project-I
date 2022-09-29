@@ -30,6 +30,11 @@ pip install -r requirements.txt
 - Decide on a dataset and how we are going to implement it
 - Take the dataset and implement an initial model using preexisting libraries (tensorflow, pytorch, etc.)
 
+#### Results
+
+- Using keras, we are able to import the dataset, and create a model that is able to classify the images with a >98% accuracy.
+- This was done in a [jupyter notebook](phase_1.ipynb).
+
 ### Phase 2: Implementation
 
 - Break up the project into smaller tasks, posting them to the issues tab
