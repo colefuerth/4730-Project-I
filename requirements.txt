@@ -1,0 +1,5 @@
+numpy
+pandas
+matplotlib
+progressbar2
+keras
