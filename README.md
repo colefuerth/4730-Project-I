@@ -56,7 +56,6 @@ pip install -r requirements.txt
 
 *Just pick tasks you are confident you can do and submit them on the issues tab, make sure you use branches*
 
-- [ ] Create a new branch for the project
 - [ ] Need a function to convert each of the images into a numpy array
 - [ ] Need a pooling function
 - [ ] Need a convolution function
