@@ -2,6 +2,14 @@
 
 4730 Machine Learning Fall 2022 Project I Repository
 
+## Set up VENV
+
+To set up a virtual environment, run the following command in the git directory:
+
+```bash
+python3 -m venv ./venv
+```
+
 ## Installing Requirements
 
 To install the requirements, run the following command:

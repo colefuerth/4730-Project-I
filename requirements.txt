@@ -3,3 +3,5 @@ pandas
 matplotlib
 progressbar2
 keras
+protobuf
+tensorflow
