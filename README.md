@@ -57,7 +57,7 @@ pip install -r requirements.txt
 *Just pick tasks you are confident you can do and submit them on the issues tab, make sure you use branches*
 
 - [ ] Need a function to convert each of the images into a numpy array
-- [ ] Need a pooling function
+- [x] Need a pooling function
 - [ ] Need a convolution function
 - [ ] Need a function to flatten the output of the convolution function
 - [ ] Need to implement a dense layer, with a few different activation functions
