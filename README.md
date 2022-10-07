@@ -59,7 +59,7 @@ pip install -r requirements.txt
 - [ ] Need a function to convert each of the images into a numpy array
 - [x] Need a pooling function
 - [ ] Need a convolution function
-- [ ] Need a function to flatten the output of the convolution function
+- [X] Need a function to flatten the output of the convolution function
 - [ ] Need to implement a dense layer, with a few different activation functions
   - [ ] relu
   - [ ] softmax
