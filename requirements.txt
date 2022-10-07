@@ -4,4 +4,4 @@ matplotlib
 progressbar2
 keras
 protobuf
-tensorflow
+tensorflow-cpu
