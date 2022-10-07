@@ -56,7 +56,13 @@ pip install -r requirements.txt
 
 *Just pick tasks you are confident you can do and submit them on the issues tab, make sure you use branches*
 
-- [ ] Need a function to convert each of the images into a numpy array
+- [x] Read input
+- [ ] Conv Layer
+- [x] relu Layer (maybe done???)
+- [x] Max pooling layer
+- [ ] Fully Connected layer
+
+<!-- - [ ] Need a function to convert each of the images into a numpy array
 - [x] Need a pooling function
 - [ ] Need a convolution function
 - [ ] Need a function to flatten the output of the convolution function
@@ -67,4 +73,4 @@ pip install -r requirements.txt
   - [ ] Cross Entropy
 - [ ] Need a fitting function that will train the model
 - [ ] Need an opimization model, that will optimize the weights of the model
-  - [ ] Adam
+  - [ ] Adam  -->
