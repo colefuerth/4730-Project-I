@@ -66,3 +66,5 @@ pip install -r requirements.txt
 - [ ] Need to implement a loss function
   - [ ] Cross Entropy
 - [ ] Need a fitting function that will train the model
+- [ ] Need an opimization model, that will optimize the weights of the model
+  - [ ] Adam
