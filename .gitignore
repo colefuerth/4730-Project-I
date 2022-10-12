@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# cole ignores
+.vscode/
+.local/
+.swap/
+.keras/
+.venv/
+.bash_history
