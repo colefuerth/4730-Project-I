@@ -57,9 +57,10 @@ pip install -r requirements.txt
 *Just pick tasks you are confident you can do and submit them on the issues tab, make sure you use branches*
 
 - [x] Read input
-- [ ] Conv Layer
-- [x] relu Layer (maybe done???)
+- [x] Conv Layer
+- [x] relu Layer
 - [x] Max pooling layer
+- [ ] loss function (cross entropy)
 - [ ] Fully Connected layer
 
 <!-- - [ ] Need a function to convert each of the images into a numpy array
