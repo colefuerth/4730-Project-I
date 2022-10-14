@@ -27,9 +27,7 @@ class Conv2D:
         from itertools import product
         for i, j, k in product(range(h_out), range(w_out), range(d_out)):
             # dot product of the filter and the image at each stride
-            dot = np.sum(X[i*self.stride:i*self.stride+self.spatial_extent, j*self.stride:j*self.stride+self.spatial_extent] * self.filters[k])
-            #temp = X[i * self.stride:i * self.stride + self.spatial_extent, j * self.stride:j * self.stride + self.spatial_extent]
-            #product = np.dot(temp.flatten(), self.filters[k].flatten())  
+            dot = np.sum(X[i * self.stride:i * self.stride + self.spatial_extent, j * self.stride:j * self.stride + self.spatial_extent])
             # weight (size of filter)
             weight = (self.spatial_extent * self.spatial_extent * depth) * self.num_filters
             # bais (number of filters)

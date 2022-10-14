@@ -7,7 +7,7 @@ class Pooling:
         self.stride = stride
         self.mode = mode
 
-    def forward(self, input_data):
+    def forward(self, X):
         X = np.asarray(X)
         h, w, d = X.shape
         h_out = int((h - self.spatial_extent) / self.stride) + 1
