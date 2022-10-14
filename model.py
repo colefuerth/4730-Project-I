@@ -13,13 +13,17 @@ from layers.Dense import Dense
 from layers.Flatten import Flatten
 
 # %%
+# import the data
 (train_X, train_y), (test_X, test_y) = mnist.load_data()
 
+# scale the data
 train_X, test_X = train_X / 255.0, test_X / 255.0
 
+# reduce the size of the dataset
 train_X, test_X = train_X[:10000], test_X[:1000]
 train_y, test_y = train_y[:10000], test_y[:1000]
 
+# need the fourth dimension to represent the number of channels
 train_X = train_X.reshape(-1, 28, 28, 1)
 test_X = test_X.reshape(-1, 28, 28, 1)
 
@@ -35,23 +39,18 @@ model.append(Pooling(2, 2, 'max'))
 model.append(Flatten())
 dims = train_X[0]
 for layer in model:
+    # print(dims.shape)
     dims = layer.forward(dims)
-dims = dims.shape[0]
-# print(dims)
-model.append(Dense(dims, 128))
+# print(dims.shape)
+model.append(Dense(dims.shape[0], 128))
 model.append(Dense(128, 10))
 
-model = [
-    #Conv2D(32, 2, 1, 1),
-    #Pooling(2, 2, 'max'),
-    Flatten(),
-    Dense(32*14*14, 100),
-    Dense(100, 10)
-]
 
 # %%
 # define functions for training
 
+# takes a tuple (i, X)
+# multithreading happens asynchronously so we need to retain the order of predictions when they come back out the other side
 def predict(X) -> np.ndarray:
     # forward pass on a single image
     for layer in model:
@@ -60,7 +59,9 @@ def predict(X) -> np.ndarray:
 
 def predict_batch(X) -> np.ndarray:
     # forward pass on a batch of images
-    return np.array(list(map(predict, X)))
+    with mp.Pool(mp.cpu_count()) as p:
+        ps = [p.apply_async(predict, args=(x,)) for x in X]
+        y_pred = [p.get() for p in progressbar(ps, prefix='predicting ')]
 
 def train(X, y, lr=0.01):
     # forward pass
