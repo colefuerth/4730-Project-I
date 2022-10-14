@@ -22,3 +22,6 @@ class Pooling:
                 out[i, j, k] = np.mean(X[i*self.stride:i*self.stride+self.spatial_extent, j*self.stride:j*self.stride+self.spatial_extent, k])
 
         return out
+    
+    def backward(self, grad_y_pred, learning_rate):
+        return None

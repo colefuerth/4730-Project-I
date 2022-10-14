@@ -24,15 +24,19 @@ class Conv2D:
 
         Y = np.zeros((h_out, w_out, d_out))
         # dot product of the filter and the image at each stride
+        from itertools import product
         for i, j, k in product(range(h_out), range(w_out), range(d_out)):
             # dot product of the filter and the image at each stride
-            temp = X[i:i+self.spatial_extent, j:j +
-                     self.spatial_extent, :] * self.filters[k, :, :]
-            product = np.sum(temp)
+            dot = np.sum(X[i*self.stride:i*self.stride+self.spatial_extent, j*self.stride:j*self.stride+self.spatial_extent] * self.filters[k])
+            #temp = X[i * self.stride:i * self.stride + self.spatial_extent, j * self.stride:j * self.stride + self.spatial_extent]
+            #product = np.dot(temp.flatten(), self.filters[k].flatten())  
             # weight (size of filter)
             weight = (self.spatial_extent * self.spatial_extent * depth) * self.num_filters
             # bais (number of filters)
             bais = self.num_filters
             # output
-            Y[i, j] = weight-product+bais
+            Y[i, j, k] = weight-dot+bais
         return Y
+
+    def backward(self, grad_y_pred, learning_rate):
+        return None
