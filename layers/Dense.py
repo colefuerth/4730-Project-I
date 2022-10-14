@@ -10,5 +10,8 @@ class Dense:
         return None
 
     def forward(self, inputs) -> np.ndarray:
+        # calculate output values from inputs, weights and biases
         self.output = np.dot(inputs, self.weights) + self.biases
+        # relu
+        self.output = np.maximum(self.output, 0)
         return self.output
