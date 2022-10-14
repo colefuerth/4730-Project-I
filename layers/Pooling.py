@@ -7,7 +7,7 @@ class Pooling:
         self.stride = stride
         self.mode = mode
 
-    def run(self, input_data):
+    def forward(self, input_data):
         X = np.asarray(X)
         h, w, d = X.shape
         h_out = int((h - self.spatial_extent) / self.stride) + 1
@@ -15,7 +15,7 @@ class Pooling:
         d_out = d
 
         out = np.zeros((h_out, w_out, d_out))
-        for i, j, k in product(range(h_out), range(w_out)):
+        for i, j, k in product(range(h_out), range(w_out), range(d_out)):
             if self.mode == 'max':
                 out[i, j, k] = np.max(X[i*self.stride:i*self.stride+self.spatial_extent, j*self.stride:j*self.stride+self.spatial_extent, k])
             elif self.mode == 'average':
