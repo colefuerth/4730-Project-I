@@ -3,7 +3,7 @@ from itertools import product
 
 
 class Conv2D:
-    def __init__(self, num_filters, spatial_extent, stride, zero_padding):
+    def __init__(self, num_filters:int, spatial_extent:int, stride:int, zero_padding:int):
         self.num_filters = num_filters
         self.spatial_extent = spatial_extent
         self.stride = stride
@@ -14,27 +14,39 @@ class Conv2D:
         #self.filters = np.random.rand(num_filters, spatial_extent, spatial_extent) -0.5
 
     def forward(self, X):
-        hight, width, depth = X.shape
-        # add zero padding
-        if self.zero_padding:
-            X = np.pad(X, self.spatial_extent // 2)
-        w_out = int((width - self.spatial_extent + (2*self.zero_padding)) / self.stride) + 1
-        h_out = int((hight - self.spatial_extent + (2*self.zero_padding)) / self.stride) + 1
-        d_out = self.num_filters
+        # X is a 4D shape of N x H x W x C
+        # N is the number of images
+        # H is the height of the image
+        # W is the width of the image
+        # C is the number of channels
+        N, height, width, depth = X.shape
 
-        Y = np.zeros((h_out, w_out, d_out))
-        # dot product of the filter and the image at each stride
-        from itertools import product
-        for i, j, k in product(range(h_out), range(w_out), range(d_out)):
-            # dot product of the filter and the image at each stride
-            dot = np.sum(X[i * self.stride:i * self.stride + self.spatial_extent, j * self.stride:j * self.stride + self.spatial_extent])
-            # weight (size of filter)
-            weight = (self.spatial_extent * self.spatial_extent * depth) * self.num_filters
-            # bais (number of filters)
-            bais = self.num_filters
-            # output
-            Y[i, j, k] = weight-dot+bais
-        return Y
+        # calculate the output shape
+        output_height = int(
+            (height - self.spatial_extent + 2 * self.zero_padding) / self.stride + 1)
+        output_width = int(
+            (width - self.spatial_extent + 2 * self.zero_padding) / self.stride + 1)
+
+        # initialize the output
+        output = np.zeros((N, output_height, output_width, self.num_filters))
+
+        # pad the input
+        X_padded = np.pad(X, ((0, 0), (self.zero_padding, self.zero_padding),
+                                (self.zero_padding, self.zero_padding), (0, 0)), 'constant')
+
+        # loop over the output
+        for i, j, k in product(range(output_height), range(output_width), range(self.num_filters)):
+            # calculate the start and end of the current "slice"
+            start_i = i * self.stride
+            end_i = start_i + self.spatial_extent
+            start_j = j * self.stride
+            end_j = start_j + self.spatial_extent
+
+            # slice the input and perform the convolution operation
+            output[:, i, j, k] = np.sum(X_padded[:, start_i:end_i, start_j:end_j, :] * self.filters[k, :, :, :], axis=(1, 2, 3))
+
+        return output
+
 
     def backward(self, grad_y_pred, learning_rate):
         return None
