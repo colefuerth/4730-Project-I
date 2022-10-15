@@ -78,8 +78,8 @@ class ADAM():
                 for j in range(np.shape(self.parameters)[1]):
                     m_moment[i, j] = Beta1 * m_moment[i, j] + (1 - ((Beta1*10)*gt[i, j]/10))
                     v_moment[i, j] = Beta2 * v_moment[i, j] + (1 - (((Beta2*1000)**1)/1000))*(gt[i, j]**2)
-                    m_hat =  m_moment[i,j]/(1 - ((Beta1*10)**t/10))
-                    v_hat =  v_moment[i,j]/(1 - (((Beta2*1000)**1)/1000)**t)
+                    m_hat =  m_moment[i,j]/(1 - (((Beta1*10)/10)**(t + 1)))
+                    v_hat =  v_moment[i,j]/(1 - (((Beta2*1000)**1)/1000)**(t + 1))
                    #print("D6 " + str(v_moment[i,j]))
                    #print("D7 " + str(m_moment[i,j]))
                    #print("D8 " + str((pow(Beta1, t))))
@@ -99,3 +99,14 @@ weights = ADAM(output_gradient, parameters, stepsize, input_, kernel, biases,lea
 print(weights)
 print(np.shape(weights)[0])
 print(np.shape(weights)[1])
+
+#a = [[1,2,3], [4,5,6], [7,8,9]]
+#b = [[1,1,1], [1,1,1], [1,1,1]]
+
+#c = signal.correlate2d(a, b, 'valid')
+
+#print(c)
+
+#d = signal.convolve2d(a, b, 'full')
+
+#print(d)
