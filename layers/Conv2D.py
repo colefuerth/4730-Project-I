@@ -4,16 +4,16 @@ from layers.layer import Layer
 
 
 class Conv2D(Layer):
-    def __init__(self, num_filters:int, spatial_extent:int, stride:int, zero_padding:int):
+    def __init__(self, num_filters:int, spatial_extent:int, stride:int, zero_padding:int, activation:str=None):
         self.num_filters = num_filters
         self.spatial_extent = spatial_extent
         self.stride = stride
         self.zero_padding = zero_padding
 
-        self.filters = np.random.randn(
-            spatial_extent, spatial_extent, num_filters) / np.sqrt(spatial_extent * spatial_extent)
-        #self.filters = np.random.rand(num_filters, spatial_extent, spatial_extent) -0.5
-        super().__init__(f"Conv2D {num_filters} {spatial_extent}x{spatial_extent} {stride} {zero_padding}")
+        # self.filters = np.random.randn(
+            # spatial_extent, spatial_extent, num_filters) / np.sqrt(spatial_extent * spatial_extent)
+        self.filters = np.random.rand(spatial_extent, spatial_extent, num_filters) - 0.5
+        super().__init__(f"Conv2D {num_filters} {spatial_extent}x{spatial_extent} {stride} {zero_padding}", activation)
 
     def forward(self, X):
         # X is a 4D shape of N x H x W x C
@@ -55,7 +55,7 @@ class Conv2D(Layer):
             output[:, i, j, :] = np.sum(
                 filters * X[:, start_i:end_i, start_j:end_j, :], axis=(1, 2))
                  
-        return output
+        return self.activation(output)
 
 
     def backward(self, grad_y_pred, learning_rate):
