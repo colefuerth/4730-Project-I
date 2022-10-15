@@ -5,7 +5,8 @@ class Flatten:
         return None
 
     def forward(self, X:np.ndarray) -> np.ndarray:
-        return X.reshape(-1)
+        N, h, w, d = X.shape
+        return X.reshape((N, h*w*d))
 
-    def backward(self, grad_y_pred, learning_rate):
+    def backward(self, grad_y_pred:np.ndarray, learning_rate:float=0.01) -> np.ndarray:
         return None

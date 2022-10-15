@@ -5,19 +5,16 @@ import numpy as np
 
 class Dense:
     def __init__(self, input_size, output_size):
-        self.weights = 0.01 * np.random.randn(input_size, output_size)
-        self.biases = np.zeros(output_size)
-        return None
+        self.weights = np.random.randn(
+            input_size, output_size) / np.sqrt(input_size)
+        self.biases = np.zeros((1, output_size))
 
-    def forward(self, inputs) -> np.ndarray:
-        # calculate output values from inputs, weights and biases
-        self.output = np.dot(inputs, self.weights) + self.biases
-        # relu
-        self.output = np.maximum(self.output, 0)
-        return self.output
+    def forward(self, X: np.ndarray) -> np.ndarray:
+        self.inputs = X
+        return np.dot(X, self.weights) + self.biases
 
-    def backward(self, grad_y_pred, learning_rate):
-        # calculate gradients
+
+    def backward(self, grad_y_pred: np.ndarray, learning_rate):
         grad_weights = np.dot(self.inputs.T, grad_y_pred)
         grad_biases = np.sum(grad_y_pred, axis=0, keepdims=True)
         grad_inputs = np.dot(grad_y_pred, self.weights.T)
