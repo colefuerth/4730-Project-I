@@ -10,7 +10,7 @@ class Conv2D:
         self.zero_padding = zero_padding
 
         self.filters = np.random.randn(
-            num_filters, spatial_extent, spatial_extent) / np.sqrt(spatial_extent * spatial_extent)
+            spatial_extent, spatial_extent, num_filters) / np.sqrt(spatial_extent * spatial_extent)
         #self.filters = np.random.rand(num_filters, spatial_extent, spatial_extent) -0.5
 
     def forward(self, X):
@@ -31,24 +31,28 @@ class Conv2D:
         output = np.zeros((N, output_height, output_width, self.num_filters))
 
         # pad the input
-        X_padded = np.pad(X, ((0, 0), (self.zero_padding, self.zero_padding),
+        X = np.pad(X, ((0, 0), (self.zero_padding, self.zero_padding),
                                 (self.zero_padding, self.zero_padding), (0, 0)), 'constant')
 
         # expand the filters to be directly multiplied with the input
         filters = np.expand_dims(self.filters, axis=0)
         filters = np.repeat(filters, N, axis=0)
+        # also expand X along the conv filter dimension
+        X = np.expand_dims(X, axis=3)
+        X = np.repeat(X, self.num_filters, axis=3)
+        X = np.squeeze(X, axis=4)
         # loop over the output
-        for i, j, k in product(range(output_height), range(output_width), range(self.num_filters)):
+        for i, j in product(range(output_height), range(output_width)):
             # calculate the start and end of the current "slice"
             start_i = i * self.stride
             end_i = start_i + self.spatial_extent
             start_j = j * self.stride
             end_j = start_j + self.spatial_extent
 
-            # slice the input and perform the convolution operation
-            X_slice = X_padded[:, start_i:end_i, start_j:end_j, :]
-            output[:, i, j, k] = np.sum(X_slice * filters[:, :, :, k], axis=(1, 2, 3))
-
+            # dot product of the filter and the image at each stride
+            output[:, i, j, :] = np.sum(
+                filters * X[:, start_i:end_i, start_j:end_j, :], axis=(1, 2))
+                 
         return output
 
 
