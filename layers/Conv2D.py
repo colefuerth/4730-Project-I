@@ -1,5 +1,6 @@
 import numpy as np
 from itertools import product
+from layer import layer
 
 
 class Conv2D:
@@ -12,6 +13,7 @@ class Conv2D:
         self.filters = np.random.randn(
             spatial_extent, spatial_extent, num_filters) / np.sqrt(spatial_extent * spatial_extent)
         #self.filters = np.random.rand(num_filters, spatial_extent, spatial_extent) -0.5
+        super().__init__(f"Conv2D {num_filters} {spatial_extent}x{spatial_extent} {stride} {zero_padding}")
 
     def forward(self, X):
         # X is a 4D shape of N x H x W x C

@@ -1,7 +1,9 @@
 import numpy as np
+from layer import layer
 
-class Flatten:
+class Flatten(layer):
     def __init__(self):
+        super().__init__(f"Flatten")
         return None
 
     def forward(self, X:np.ndarray) -> np.ndarray:

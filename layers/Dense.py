@@ -1,13 +1,15 @@
 import numpy as np
+from layer import layer
 
 # generate a fully connected layer
 
 
-class Dense:
+class Dense(layer):
     def __init__(self, input_size, output_size):
         self.weights = np.random.randn(
             input_size, output_size) / np.sqrt(input_size)
         self.biases = np.zeros((1, output_size))
+        super().__init__(f"Dense {input_size} -> {output_size}")
 
     def forward(self, X: np.ndarray) -> np.ndarray:
         self.inputs = X
