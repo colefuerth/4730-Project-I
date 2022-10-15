@@ -61,7 +61,7 @@ def predict(X, model):
     return X
 
 
-def train(X, y, model, lr=0.01, epochs=10):
+def train(X, y, model, lr=1e-4, epochs=10):
 
     # need to make epochs work
     # need to do forward passes chunks of mp.cpu_count() images at a time
@@ -83,6 +83,8 @@ def train(X, y, model, lr=0.01, epochs=10):
             grad_y_pred = np.abs(y_pred - y[i:min(X.shape[0], i+chunksize)])
 
             loss = np.square(grad_y_pred).sum()
+            if loss is np.nan:
+                raise Exception('Loss is NaN')
             print(loss)
 
             # backward pass
