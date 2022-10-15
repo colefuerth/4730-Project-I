@@ -1,7 +1,7 @@
 import numpy as np
-from layer import layer
+from layers.layer import Layer
 
-class Flatten(layer):
+class Flatten(Layer):
     def __init__(self):
         super().__init__(f"Flatten")
         return None

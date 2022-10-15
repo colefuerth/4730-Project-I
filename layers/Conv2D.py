@@ -1,9 +1,9 @@
 import numpy as np
 from itertools import product
-from layer import layer
+from layers.layer import Layer
 
 
-class Conv2D:
+class Conv2D(Layer):
     def __init__(self, num_filters:int, spatial_extent:int, stride:int, zero_padding:int):
         self.num_filters = num_filters
         self.spatial_extent = spatial_extent

@@ -1,7 +1,8 @@
 import numpy as np
 from itertools import product
+from layers.layer import Layer
 
-class Pooling:
+class Pooling(Layer):
     def __init__(self, spatial_extent:int=2, stride:int=2, mode:str='max'):
         """
         spatial_extent: the spatial extent of the pooling operation
@@ -11,6 +12,7 @@ class Pooling:
         self.spatial_extent = spatial_extent
         self.stride = stride
         self.mode = mode
+        super().__init__(f"Pooling {spatial_extent}x{spatial_extent} {stride} {mode}")
         return None
 
     def forward(self, X:np.ndarray) -> np.ndarray:
