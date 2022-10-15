@@ -34,6 +34,9 @@ class Conv2D:
         X_padded = np.pad(X, ((0, 0), (self.zero_padding, self.zero_padding),
                                 (self.zero_padding, self.zero_padding), (0, 0)), 'constant')
 
+        # expand the filters to be directly multiplied with the input
+        filters = np.expand_dims(self.filters, axis=0)
+        filters = np.repeat(filters, N, axis=0)
         # loop over the output
         for i, j, k in product(range(output_height), range(output_width), range(self.num_filters)):
             # calculate the start and end of the current "slice"
@@ -43,7 +46,8 @@ class Conv2D:
             end_j = start_j + self.spatial_extent
 
             # slice the input and perform the convolution operation
-            output[:, i, j, k] = np.sum(X_padded[:, start_i:end_i, start_j:end_j, :] * self.filters[k, :, :, :], axis=(1, 2, 3))
+            X_slice = X_padded[:, start_i:end_i, start_j:end_j, :]
+            output[:, i, j, k] = np.sum(X_slice * filters[:, :, :, k], axis=(1, 2, 3))
 
         return output
 
