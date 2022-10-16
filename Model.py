@@ -17,8 +17,8 @@ from layers.Flatten import Flatten
 (train_X, train_y), (test_X, test_y) = mnist.load_data()
 
 # reduce the size of the dataset
-train_X, test_X = train_X[:10000], test_X[:1000]
-train_y, test_y = train_y[:10000], test_y[:1000]
+train_X, test_X = train_X[:1000], test_X[:1000]
+train_y, test_y = train_y[:1000], test_y[:1000]
 
 # scale the data
 train_X, test_X = train_X / 255.0, test_X / 255.0
@@ -101,3 +101,17 @@ def train(X, y, model, lr=1e-4, epochs=10):
 # %%
 # train the model
 train(train_X, train_y, model)
+
+
+# %%
+
+# test the accuracy of the model
+
+def test(X, y, model):
+    y_pred = np.zeros(y.shape)
+    for i in range(0, len(X), 100):
+        y_pred[i:min(X.shape[0], i+100)] = np.argmax(
+            predict(X[i:min(X.shape[0], i+100)], model), axis=1)
+    return np.mean(y_pred == y)
+
+print('Test accuracy: %.2f%%' % (test(test_X, test_y, model) * 100))
