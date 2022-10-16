@@ -6,7 +6,7 @@ from layers.layer import Layer
 
 class Dense(Layer):
     def __init__(self, input_size, output_size, activation=None):
-        self.weights = np.random.rand(input_size, output_size) - 0.5
+        self.weights = np.random.randn(input_size, output_size) / np.sqrt(input_size)
         self.biases = np.zeros((1, output_size))
         super().__init__(f"Dense {input_size} -> {output_size}", activation)
 

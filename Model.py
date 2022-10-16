@@ -16,13 +16,15 @@ from layers.Flatten import Flatten
 # import the data
 (train_X, train_y), (test_X, test_y) = mnist.load_data()
 
-# scale the data
-train_X, test_X = train_X / 255.0, test_X / 255.0
-
-
 # reduce the size of the dataset
 train_X, test_X = train_X[:10000], test_X[:1000]
 train_y, test_y = train_y[:10000], test_y[:1000]
+
+# scale the data
+train_X, test_X = train_X / 255.0, test_X / 255.0
+
+# zero-center and normalize the images
+train_X = (train_X - np.mean(train_X)) / np.std(train_X)
 
 # need the fourth dimension to represent the number of channels
 train_X = train_X.reshape(-1, 28, 28, 1)
@@ -46,7 +48,7 @@ for layer in model:
     dims = layer.forward(dims)
 
 model.append(Dense(np.prod(dims.shape[1:]), 128, activation='relu'))
-model.append(Dense(128, 10, activation='softmax'))
+model.append(Dense(128, 10, activation='relu'))
 
 for layer in model[3:]:
     dims = layer.forward(dims)
@@ -68,8 +70,7 @@ def train(X, y, model, lr=1e-4, epochs=10):
     # when each forward pass is done, do a backward pass on the same chunk of images
     loss = 0
     chunksize = 10
-    # create a one-hot vector of y
-    y = np.eye(10)[y]
+    assert (X.shape[0] % chunksize == 0)
 
     for epoch in range(epochs):
         p = progressbar(
@@ -80,12 +81,14 @@ def train(X, y, model, lr=1e-4, epochs=10):
             y_pred = predict(X[i:min(X.shape[0], i+chunksize)], model)
 
             # gradient
-            grad_y_pred = np.abs(y_pred - y[i:min(X.shape[0], i+chunksize)])
+            grad_y_pred = y_pred - \
+                np.eye(10)[y[i:min(X.shape[0], i+chunksize)]]
+            acc = np.mean(np.argmax(y_pred, axis=1) == y[i:i+chunksize])
 
             loss = np.square(grad_y_pred).sum()
             if loss is np.nan:
                 raise Exception('Loss is NaN')
-            print(loss)
+            print(f'loss={loss.round(2)}, acc={acc * 100.0}%')
 
             # backward pass
             for layer in reversed(model):

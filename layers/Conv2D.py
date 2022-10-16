@@ -10,9 +10,7 @@ class Conv2D(Layer):
         self.stride = stride
         self.zero_padding = zero_padding
 
-        # self.filters = np.random.randn(
-            # spatial_extent, spatial_extent, num_filters) / np.sqrt(spatial_extent * spatial_extent)
-        self.filters = np.random.rand(spatial_extent, spatial_extent, num_filters) - 0.5
+        self.filters = np.random.randn(spatial_extent, spatial_extent, num_filters) / np.sqrt(spatial_extent)
         super().__init__(f"Conv2D {num_filters} {spatial_extent}x{spatial_extent} {stride} {zero_padding}", activation)
 
     def forward(self, X):
