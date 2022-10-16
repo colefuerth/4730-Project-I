@@ -2,6 +2,8 @@
 class Layer:
     def __init__(self, name):
         self.name = name
+        self.last_input = None
+
 
     def forward(self, X):
         raise NotImplementedError
