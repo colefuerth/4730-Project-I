@@ -17,8 +17,8 @@ from layers.Flatten import Flatten
 (train_X, train_y), (test_X, test_y) = mnist.load_data()
 
 # reduce the size of the dataset
-train_X, test_X = train_X[:1000], test_X[:1000]
-train_y, test_y = train_y[:1000], test_y[:1000]
+train_X, test_X = train_X[:10000], test_X[:1000]
+train_y, test_y = train_y[:10000], test_y[:1000]
 
 # scale the data
 train_X, test_X = train_X / 255.0, test_X / 255.0
@@ -69,12 +69,14 @@ def train(X, y, model, lr=1e-4, epochs=10):
     # need to do forward passes chunks of mp.cpu_count() images at a time
     # when each forward pass is done, do a backward pass on the same chunk of images
     loss = 0
-    chunksize = 10
+    chunksize = 100
     assert (X.shape[0] % chunksize == 0)
 
     for epoch in range(epochs):
+        acclist = []
+        losslist = []
         p = progressbar(
-            max_value=X.shape[0], prefix='epoch %d ' % epoch, redirect_stdout=True)
+            max_value=X.shape[0], prefix=f'epoch {epoch}/{epochs} ', redirect_stdout=True)
         # break into chunks of at most mp.cpu_count() images
         for i in range(0, len(X), chunksize):
             # forward pass
@@ -84,11 +86,14 @@ def train(X, y, model, lr=1e-4, epochs=10):
             grad_y_pred = y_pred - \
                 np.eye(10)[y[i:min(X.shape[0], i+chunksize)]]
             acc = np.mean(np.argmax(y_pred, axis=1) == y[i:i+chunksize])
+            acclist.append(acc)
 
             loss = np.square(grad_y_pred).sum()
+            losslist.append(loss)
             if loss is np.nan:
                 raise Exception('Loss is NaN')
-            print(f'loss={loss.round(2)}, acc={acc * 100.0}%')
+                exit(-1)
+            # print(f'loss={loss.round(2)}, acc={acc * 100.0}%')
 
             # backward pass
             for layer in reversed(model):
@@ -96,6 +101,7 @@ def train(X, y, model, lr=1e-4, epochs=10):
 
             p.update(i)
         p.finish()
+        print(f'loss = {np.mean(losslist)}   accuracy = {np.mean(acclist)}%')
 
 
 # %%
