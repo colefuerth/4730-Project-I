@@ -71,6 +71,8 @@ class Conv2D(Layer):
                 yield im_region, i, j
 
     def backward(self, grad_y_pred, learn_rate):
+
+        return None  # dont do this for now
         # X is a 4D array of shape (N, height, width, depth)
         N, height, width, depth = grad_y_pred.shape
         print("grad_y_pred", grad_y_pred.shape)
@@ -84,8 +86,8 @@ class Conv2D(Layer):
             d_l_d_filters = np.zeros(self.filters.shape)
             for im_region, i, j in self.iterate_regions(self.last_input[im_num, :, :, 0]):
                 for f in range(self.num_filters):
-                    d_l_d_filters[:,:,f] += grad_y_pred[im_num,
-                                                    i, j, f] * im_region
+                    d_l_d_filters[:, :, f] += grad_y_pred[im_num,
+                                                          i, j, f] * im_region
 
             # update filters
             self.filters -= learn_rate * d_l_d_filters
