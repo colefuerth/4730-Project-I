@@ -1,7 +1,7 @@
 numpy
-pandas
 matplotlib
 keras
-tensorflow-cpu
+tensorflow
 progressbar2
 ipykernel
+psutil
