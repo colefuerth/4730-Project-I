@@ -4,8 +4,8 @@
 from tensorflow.keras.datasets import mnist
 from progressbar import ProgressBar as progressbar
 import numpy as np
-import multiprocessing as mp
-from itertools import product
+# import multiprocessing as mp
+# from itertools import product
 
 from layers.Conv2D import Conv2D
 from layers.Pooling import Pooling
@@ -69,7 +69,7 @@ def train(X, y, model, lr=1e-4, epochs=10):
     # need to do forward passes chunks of mp.cpu_count() images at a time
     # when each forward pass is done, do a backward pass on the same chunk of images
     loss = 0
-    chunksize = 100
+    chunksize = 20
     assert (X.shape[0] % chunksize == 0)
 
     for epoch in range(epochs):
@@ -77,7 +77,6 @@ def train(X, y, model, lr=1e-4, epochs=10):
         losslist = []
         p = progressbar(
             max_value=X.shape[0], prefix=f'epoch {epoch}/{epochs} ', redirect_stdout=True)
-        # break into chunks of at most mp.cpu_count() images
         for i in range(0, len(X), chunksize):
             # forward pass
             y_pred = predict(X[i:min(X.shape[0], i+chunksize)], model)
@@ -90,18 +89,19 @@ def train(X, y, model, lr=1e-4, epochs=10):
 
             loss = np.square(grad_y_pred).sum()
             losslist.append(loss)
-            if loss is np.nan:
-                raise Exception('Loss is NaN')
+            if loss is type(np.nan):
+                raise ValueError('loss is NaN')
                 exit(-1)
-            # print(f'loss={loss.round(2)}, acc={acc * 100.0}%')
+            print(f'loss={loss.round(2)}, acc={acc * 100.0}%')
 
             # backward pass
             for layer in reversed(model):
-                grad_y_pred = layer.backward(grad_y_pred, lr)
+                grad_y_pred = layer.backward(grad_y_pred, lr / chunksize)
 
             p.update(i)
         p.finish()
-        print(f'loss = {np.mean(losslist)}   accuracy = {np.mean(acclist)}%')
+        print(
+            f'epoch {epoch}/{epochs} loss = {np.mean(losslist)} accuracy = {np.mean(acclist) * 100}%')
 
 
 # %%
@@ -115,9 +115,15 @@ train(train_X, train_y, model)
 
 def test(X, y, model):
     y_pred = np.zeros(y.shape)
-    for i in range(0, len(X), 100):
-        y_pred[i:min(X.shape[0], i+100)] = np.argmax(
-            predict(X[i:min(X.shape[0], i+100)], model), axis=1)
+    chunksize = 100
+    p = progressbar(
+        max_value=X.shape[0], prefix='testing ', redirect_stdout=True)
+    for i in range(0, len(X), chunksize):
+        y_pred[i:i+chunksize] = np.argmax(
+            predict(X[i:i+chunksize], model), axis=1)
+        p.update(i)
+    p.finish()
     return np.mean(y_pred == y)
+
 
 print('Test accuracy: %.2f%%' % (test(test_X, test_y, model) * 100))
