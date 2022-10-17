@@ -4,14 +4,16 @@ from layers.layer import Layer
 
 
 class Conv2D(Layer):
-    def __init__(self, num_filters:int, spatial_extent:int, stride:int, zero_padding:int, activation:str=None):
+    def __init__(self, num_filters: int, spatial_extent: int, stride: int, zero_padding: int, activation: str = None):
         self.num_filters = num_filters
         self.spatial_extent = spatial_extent
         self.stride = stride
         self.zero_padding = zero_padding
 
-        self.filters = np.random.randn(spatial_extent, spatial_extent, num_filters) / np.sqrt(spatial_extent)
-        super().__init__(f"Conv2D {num_filters} {spatial_extent}x{spatial_extent} {stride} {zero_padding}", activation)
+        self.filters = np.random.randn(
+            spatial_extent, spatial_extent, num_filters) / np.sqrt(spatial_extent)
+        super().__init__(
+            f"Conv2D {num_filters} {spatial_extent}x{spatial_extent} {stride} {zero_padding}", activation)
 
     def forward(self, X):
         # X is a 4D shape of N x H x W x C
@@ -32,7 +34,7 @@ class Conv2D(Layer):
 
         # pad the input
         X = np.pad(X, ((0, 0), (self.zero_padding, self.zero_padding),
-                                (self.zero_padding, self.zero_padding), (0, 0)), 'constant')
+                       (self.zero_padding, self.zero_padding), (0, 0)), 'constant')
 
         # expand the filters to be directly multiplied with the input
         filters = np.expand_dims(self.filters, axis=0)
@@ -52,9 +54,24 @@ class Conv2D(Layer):
             # dot product of the filter and the image at each stride
             output[:, i, j, :] = np.sum(
                 filters * X[:, start_i:end_i, start_j:end_j, :], axis=(1, 2))
-                 
+
         return self.activation(output)
 
-
     def backward(self, grad_y_pred, learning_rate):
+        # X is a 4D array of shape (N, height, width, depth)
+        N, height, width, depth = grad_y_pred.shape
+
+        filter = np.zeros(self.filters.shape)
+
+        for k, f in product(range(N), range(self.num_filters)):
+            for i, j, d in product(range(height), range(width), range(depth)):
+                start_i = i * self.stride
+                end_i = start_i + self.spatial_extent
+                start_j = j * self.stride
+                end_j = start_j + self.spatial_extent
+                filter[f, :, :] = self.filters[:, :, f] * \
+                    grad_y_pred[k, start_i:end_i, start_j:end_j, d]
+
+            # adjust the filters
+            self.filters -= learning_rate * filter
         return None
