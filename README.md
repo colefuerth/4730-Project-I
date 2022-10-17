@@ -2,15 +2,14 @@
 
 4730 Machine Learning Fall 2022 Project I Repository
 
-## Set up VENV
+## Running the Project
 
-To set up a virtual environment, run the following command in the git directory:
+There are two CNNs implemented here:
 
-```bash
-python3 -m venv ./venv
-```
+1. Model.py is hard coded in NumPy. It is less accurate, but works enough that we are happy with it, and is completely done from scratch.
+2. phase_1.ipynb, which uses a sequential Keras model. It is more accurate(>98%), but is not completely done from scratch.
 
-## Installing Requirements
+### Installing Requirements
 
 To install the requirements, run the following command:
 
@@ -49,29 +48,3 @@ pip install -r requirements.txt
 - We can have assigned or unassigned tasks
 - **Make sure we are all properly using github branches etc**
 - The easiest way to start will be to use a library like Keras or PyTorch, and test our implementation in a jupyter notebook
-
-#### Tasks
-
-**Note:** These tasks are subject to **heavy change**, this is simply a broken down feature list of the keras model. It does not make sense for us to implement this the same was keras does; there is a simpler, more direct way to hard code this model.
-
-*Just pick tasks you are confident you can do and submit them on the issues tab, make sure you use branches*
-
-- [x] Read input
-- [x] Conv Layer
-- [x] relu Layer
-- [x] Max pooling layer
-- [ ] loss function (cross entropy)
-- [ ] Fully Connected layer
-
-<!-- - [ ] Need a function to convert each of the images into a numpy array
-- [x] Need a pooling function
-- [ ] Need a convolution function
-- [ ] Need a function to flatten the output of the convolution function
-- [ ] Need to implement a dense layer, with a few different activation functions
-  - [ ] relu
-  - [ ] softmax
-- [ ] Need to implement a loss function
-  - [ ] Cross Entropy
-- [ ] Need a fitting function that will train the model
-- [ ] Need an opimization model, that will optimize the weights of the model
-  - [ ] Adam  -->
