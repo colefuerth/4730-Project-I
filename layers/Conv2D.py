@@ -23,6 +23,8 @@ class Conv2D(Layer):
         # C is the number of channels
         N, height, width, depth = X.shape
 
+        self.last_input = X
+
         # calculate the output shape
         output_height = int(
             (height - self.spatial_extent + 2 * self.zero_padding) / self.stride + 1)
@@ -57,21 +59,35 @@ class Conv2D(Layer):
 
         return self.activation(output)
 
-    def backward(self, grad_y_pred, learning_rate):
+    def iterate_regions(self, image):
+        # generates all possible 3*3 image regions using valid padding
+
+        h, w = image.shape
+
+        for i in range(h - self.spatial_extent + 1):
+            for j in range(w - self.spatial_extent + 1):
+                im_region = image[i:i + self.spatial_extent,
+                                  j:j + self.spatial_extent]
+                yield im_region, i, j
+
+    def backward(self, grad_y_pred, learn_rate):
         # X is a 4D array of shape (N, height, width, depth)
         N, height, width, depth = grad_y_pred.shape
+        print("grad_y_pred", grad_y_pred.shape)
 
-        filter = np.zeros(self.filters.shape)
+        '''
+        Performs a backward pass of the conv layer.
+        - d_L_d_out is the loss gradient for this layer's outputs.
+        - learn_rate is a float.
+        '''
+        for im_num in range(N):
+            d_l_d_filters = np.zeros(self.filters.shape)
+            for im_region, i, j in self.iterate_regions(self.last_input[im_num, :, :, 0]):
+                for f in range(self.num_filters):
+                    d_l_d_filters[:,:,f] += grad_y_pred[im_num,
+                                                    i, j, f] * im_region
 
-        for k, f in product(range(N), range(self.num_filters)):
-            for i, j, d in product(range(height), range(width), range(depth)):
-                start_i = i * self.stride
-                end_i = start_i + self.spatial_extent
-                start_j = j * self.stride
-                end_j = start_j + self.spatial_extent
-                filter[f, :, :] = self.filters[:, :, f] * \
-                    grad_y_pred[k, start_i:end_i, start_j:end_j, d]
+            # update filters
+            self.filters -= learn_rate * d_l_d_filters
 
-            # adjust the filters
-            self.filters -= learning_rate * filter
         return None
