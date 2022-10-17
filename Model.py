@@ -17,8 +17,12 @@ from layers.Flatten import Flatten
 (train_X, train_y), (test_X, test_y) = mnist.load_data()
 
 # reduce the size of the dataset
-train_X, test_X = train_X[:10000], test_X[:1000]
-train_y, test_y = train_y[:10000], test_y[:1000]
+# train_X, test_X = train_X[:10000], test_X[:1000]
+# train_y, test_y = train_y[:10000], test_y[:1000]
+
+# randomize the data
+p = np.random.permutation(len(train_X))
+train_X, train_y = train_X[p], train_y[p]
 
 # scale the data
 train_X, test_X = train_X / 255.0, test_X / 255.0
@@ -76,7 +80,7 @@ def train(X, y, model, lr=1e-4, epochs=10):
         acclist = []
         losslist = []
         p = progressbar(
-            max_value=X.shape[0], prefix=f'epoch {epoch}/{epochs} ', redirect_stdout=True)
+            max_value=X.shape[0], prefix=f'epoch {epoch+1}/{epochs} ', redirect_stdout=True)
         for i in range(0, len(X), chunksize):
             # forward pass
             y_pred = predict(X[i:min(X.shape[0], i+chunksize)], model)
@@ -106,12 +110,12 @@ def train(X, y, model, lr=1e-4, epochs=10):
 
 # %%
 # train the model
-train(train_X, train_y, model)
-
+train(train_X, train_y, model, epochs=1)
 
 # %%
 
 # test the accuracy of the model
+
 
 def test(X, y, model):
     y_pred = np.zeros(y.shape)
